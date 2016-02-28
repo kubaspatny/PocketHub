@@ -19,9 +19,11 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.InsetDrawable;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
@@ -138,13 +140,17 @@ public class AvatarLoader {
         new FetchAvatarTask(context) {
 
             @Override
-            public BitmapDrawable call() throws Exception {
+            public InsetDrawable call() throws Exception {
                 Bitmap image = Bitmap.createScaledBitmap(p.load(url).get(), avatarSize, avatarSize, false);
-                return new BitmapDrawable(context.getResources(), ImageUtils.roundCorners(image, cornerRadius));
+                BitmapDrawable avatar = new BitmapDrawable(context.getResources(), ImageUtils.roundCorners(image, cornerRadius));
+
+                // compute inset in pixels
+                int insetPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, context.getResources().getDisplayMetrics());
+                return new InsetDrawable(avatar, 0,0,insetPx,0);
             }
 
             @Override
-            protected void onSuccess(BitmapDrawable image) throws Exception {
+            protected void onSuccess(InsetDrawable image) throws Exception {
                 actionBar.setLogo(image);
             }
         }.execute();
@@ -272,7 +278,7 @@ public class AvatarLoader {
         return cache.delete();
     }
 
-    private static abstract class FetchAvatarTask extends RoboAsyncTask<BitmapDrawable> {
+    private static abstract class FetchAvatarTask extends RoboAsyncTask<InsetDrawable> {
 
         private static final Executor EXECUTOR = Executors.newFixedThreadPool(1);
 
