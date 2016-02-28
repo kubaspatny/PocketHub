@@ -140,18 +140,16 @@ public class AvatarLoader {
         new FetchAvatarTask(context) {
 
             @Override
-            public InsetDrawable call() throws Exception {
+            public BitmapDrawable call() throws Exception {
                 Bitmap image = Bitmap.createScaledBitmap(p.load(url).get(), avatarSize, avatarSize, false);
-                BitmapDrawable avatar = new BitmapDrawable(context.getResources(), ImageUtils.roundCorners(image, cornerRadius));
-
-                // compute inset in pixels
-                int insetPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, context.getResources().getDisplayMetrics());
-                return new InsetDrawable(avatar, 0, 0, insetPx, 0);
+                return new BitmapDrawable(context.getResources(), ImageUtils.roundCorners(image, cornerRadius));
             }
 
             @Override
-            protected void onSuccess(InsetDrawable image) throws Exception {
-                actionBar.setLogo(image);
+            protected void onSuccess(BitmapDrawable image) throws Exception {
+                // compute inset in pixels
+                int insetPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, context.getResources().getDisplayMetrics());
+                actionBar.setLogo(new InsetDrawable(image, 0, 0, insetPx, 0));
             }
         }.execute();
     }
@@ -278,7 +276,7 @@ public class AvatarLoader {
         return cache.delete();
     }
 
-    private static abstract class FetchAvatarTask extends RoboAsyncTask<InsetDrawable> {
+    private static abstract class FetchAvatarTask extends RoboAsyncTask<BitmapDrawable> {
 
         private static final Executor EXECUTOR = Executors.newFixedThreadPool(1);
 
