@@ -146,7 +146,7 @@ public class AvatarLoader {
 
                 // compute inset in pixels
                 int insetPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, context.getResources().getDisplayMetrics());
-                return new InsetDrawable(avatar, 0,0,insetPx,0);
+                return new InsetDrawable(avatar, 0, 0, insetPx, 0);
             }
 
             @Override
